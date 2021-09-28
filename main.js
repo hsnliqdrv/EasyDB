@@ -1,6 +1,6 @@
 const fs = require("fs")
-const encode = require("./encoder.js")
 
+let Colls = []
 module.exports.CreateDB = function(dbname, dir){
     this.info = {
         name: dbname,
@@ -26,10 +26,14 @@ module.exports.CreateDB = function(dbname, dir){
     })
     fs.writeFileSync(dir + "/" + "database_info.json", JSON.stringify(this.info))
     this.CreateCollection = (colle_name) => {
-        fs.openSync(`${dir}/${colle_name}.edbc`)
+        if (colle_name in Colls) {
+            console.log(`Collection: '${colle_name}' already exists!`)
+        } else {
+            Colls.push(colle_name)
+        }
     }
     this.CreateRow = (r_title, colle_name, data) => {
-
+        fs.writeFileSync(`${dir}/${colle_name}.edbc`, `(${r_title})${JSON.stringify(data)}`)
     }
 }
 function ejsonf(dir, action = data => data){
